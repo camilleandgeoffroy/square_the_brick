@@ -174,8 +174,11 @@ class MentalMathGame:
         def on_start_leave(event):
             start_canvas.delete("hover")
         
+        # Multiple ways to trigger the click for maximum reliability
         start_canvas.bind("<Button-1>", on_start_click)
-        start_canvas.bind("<ButtonRelease-1>", on_start_click)  # Also respond to button release
+        start_canvas.bind("<ButtonRelease-1>", on_start_click)
+        start_canvas.bind("<Return>", on_start_click)  # Enter key
+        start_canvas.bind("<space>", on_start_click)   # Space key
         start_canvas.bind("<Enter>", on_start_enter)
         start_canvas.bind("<Leave>", on_start_leave)
         start_canvas.config(cursor="hand2")
@@ -206,9 +209,12 @@ class MentalMathGame:
         
         manual_canvas.bind("<Button-1>", on_manual_click)
         manual_canvas.bind("<ButtonRelease-1>", on_manual_click)
+        manual_canvas.bind("<Return>", on_manual_click)
+        manual_canvas.bind("<space>", on_manual_click)
         manual_canvas.bind("<Enter>", on_manual_enter)
         manual_canvas.bind("<Leave>", on_manual_leave)
         manual_canvas.config(cursor="hand2")
+        manual_canvas.focus_set()
         
         # Settings button canvas
         settings_canvas = tk.Canvas(buttons_frame, width=120, height=50, bg="#F5F5F5", highlightthickness=0)
@@ -231,9 +237,12 @@ class MentalMathGame:
         
         settings_canvas.bind("<Button-1>", on_settings_click)
         settings_canvas.bind("<ButtonRelease-1>", on_settings_click)
+        settings_canvas.bind("<Return>", on_settings_click)
+        settings_canvas.bind("<space>", on_settings_click)
         settings_canvas.bind("<Enter>", on_settings_enter)
         settings_canvas.bind("<Leave>", on_settings_leave)
         settings_canvas.config(cursor="hand2")
+        settings_canvas.focus_set()
         
         # Leaderboard button canvas
         leaderboard_canvas = tk.Canvas(buttons_frame, width=120, height=50, bg="#F5F5F5", highlightthickness=0)
@@ -256,9 +265,12 @@ class MentalMathGame:
         
         leaderboard_canvas.bind("<Button-1>", on_leaderboard_click)
         leaderboard_canvas.bind("<ButtonRelease-1>", on_leaderboard_click)
+        leaderboard_canvas.bind("<Return>", on_leaderboard_click)
+        leaderboard_canvas.bind("<space>", on_leaderboard_click)
         leaderboard_canvas.bind("<Enter>", on_leaderboard_enter)
         leaderboard_canvas.bind("<Leave>", on_leaderboard_leave)
         leaderboard_canvas.config(cursor="hand2")
+        leaderboard_canvas.focus_set()
         
     def start_game_with_selections(self):
         mode = self.selected_mode.get()
@@ -353,9 +365,12 @@ class MentalMathGame:
         
         submit_canvas.bind("<Button-1>", on_submit_click)
         submit_canvas.bind("<ButtonRelease-1>", on_submit_click)
+        submit_canvas.bind("<Return>", on_submit_click)
+        submit_canvas.bind("<space>", on_submit_click)
         submit_canvas.bind("<Enter>", on_submit_enter)
         submit_canvas.bind("<Leave>", on_submit_leave)
         submit_canvas.config(cursor="hand2")
+        submit_canvas.focus_set()
         
     def show_manual(self):
         manual_window = tk.Toplevel(self.root)
@@ -377,8 +392,8 @@ class MentalMathGame:
                        padding=[20, 10], 
                        font=("Georgia", 10, "bold"))
         style.map('Manual.TNotebook.Tab',
-                 background=[('selected', '#4A90E2'), ('!selected', '#2C3E50')],
-                 foreground=[('selected', 'white'), ('!selected', 'white')])
+                 background=[('selected', '#E8F4FD'), ('!selected', '#F0F0F0')],
+                 foreground=[('selected', '#2C3E50'), ('!selected', '#2C3E50')])
         
         self.manual_notebook.configure(style='Manual.TNotebook')
         
@@ -771,6 +786,10 @@ class MentalMathGame:
         # Create UI elements
         self.create_game_ui()
         self.spawn_new_brick()
+        
+        # Ensure the answer entry is focused and ready for typing
+        self.game_window.after(100, self.ensure_answer_focus)
+        
         self.update_game()
         
     def create_game_ui(self):
@@ -858,14 +877,19 @@ class MentalMathGame:
         input_frame.pack(pady=10)
         
         tk.Label(input_frame, text="Answer:", font=("Arial", 14, "bold"), bg="#F0F8FF").pack(side="left")
-        self.answer_entry = tk.Entry(input_frame, font=("Arial", 16), width=15, relief="solid", bd=2,
-                                   highlightthickness=2, highlightcolor="#4A90E2", insertwidth=3)
+        self.answer_entry = tk.Entry(input_frame, font=("Arial", 16), width=15, relief="solid", bd=3,
+                                   highlightthickness=3, highlightcolor="#4A90E2", insertwidth=3,
+                                   bg="#FFFFFF", selectbackground="#4A90E2", selectforeground="white")
         self.answer_entry.pack(side="left", padx=10)
-        self.answer_entry.focus_set()
+        
+        # Multiple ways to ensure focus
+        self.answer_entry.focus_force()
         self.answer_entry.bind("<Return>", self.check_answer)
         self.answer_entry.bind("<Button-1>", self.focus_answer_entry)
+        self.answer_entry.bind("<ButtonRelease-1>", self.focus_answer_entry)  # Also on release
         self.answer_entry.bind("<FocusIn>", self.on_entry_focus_in)
         self.answer_entry.bind("<FocusOut>", self.on_entry_focus_out)
+        self.answer_entry.bind("<Key>", self.on_key_press)  # Any key press ensures focus
         
         # Bind space for pause
         self.game_window.bind("<KeyPress-space>", self.toggle_pause)
@@ -999,6 +1023,15 @@ class MentalMathGame:
             self.answer_entry.focus_set()
             self.answer_entry.icursor(tk.END)  # Move cursor to end
     
+    def ensure_answer_focus(self):
+        """Ensure the answer entry is focused and ready for immediate typing"""
+        if hasattr(self, 'answer_entry') and self.answer_entry.winfo_exists():
+            self.answer_entry.focus_force()  # Force focus
+            self.answer_entry.select_range(0, tk.END)  # Select all text (if any)
+            self.answer_entry.icursor(tk.END)  # Position cursor at end
+            # Make sure the game window is also focused
+            self.game_window.focus_force()
+    
     def on_entry_focus_in(self, event=None):
         """Handle when entry field gains focus"""
         if hasattr(self, 'answer_entry'):
@@ -1008,6 +1041,13 @@ class MentalMathGame:
         """Handle when entry field loses focus"""
         if hasattr(self, 'answer_entry'):
             self.answer_entry.config(highlightbackground="#CCCCCC", bg="#F8F8F8")
+    
+    def on_key_press(self, event=None):
+        """Handle any key press to ensure entry stays focused"""
+        if hasattr(self, 'answer_entry'):
+            # If the entry isn't focused, focus it
+            if self.answer_entry.focus_get() != self.answer_entry:
+                self.answer_entry.focus_force()
     
     def toggle_pause(self, event=None):
         if not self.game_active:
@@ -1081,8 +1121,9 @@ class MentalMathGame:
                 # Explode brick
                 self.explode_brick()
                 
-                # Clear answer field
+                # Clear answer field and refocus
                 self.answer_entry.delete(0, tk.END)
+                self.focus_answer_entry()
                 
                 # Spawn new brick after a short delay
                 self.game_window.after(500, self.spawn_new_brick)
@@ -1171,8 +1212,9 @@ class MentalMathGame:
             heart = self.heart_labels.pop()
             heart.destroy()
             
-        # Clear answer field
+        # Clear answer field and refocus
         self.answer_entry.delete(0, tk.END)
+        self.focus_answer_entry()
         
         if self.lives <= 0:
             self.game_over()
