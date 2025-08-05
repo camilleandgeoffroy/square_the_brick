@@ -168,8 +168,18 @@ class MentalMathGame:
             start_canvas.after(100, lambda: start_canvas.delete("pressed"))
             self.start_game_with_selections()
         
+        def on_start_enter(event):
+            start_canvas.create_rectangle(12, 12, 208, 48, fill="#34ce57", outline="", tags="hover")
+        
+        def on_start_leave(event):
+            start_canvas.delete("hover")
+        
         start_canvas.bind("<Button-1>", on_start_click)
+        start_canvas.bind("<ButtonRelease-1>", on_start_click)  # Also respond to button release
+        start_canvas.bind("<Enter>", on_start_enter)
+        start_canvas.bind("<Leave>", on_start_leave)
         start_canvas.config(cursor="hand2")
+        start_canvas.focus_set()  # Make it focusable
         
         # Settings and Leaderboard buttons - macOS compatible
         buttons_frame = tk.Frame(self.root, bg="#F5F5F5")
@@ -188,7 +198,16 @@ class MentalMathGame:
             manual_canvas.after(100, lambda: manual_canvas.delete("pressed"))
             self.show_manual()
         
+        def on_manual_enter(event):
+            manual_canvas.create_rectangle(7, 7, 113, 43, fill="#20c4e0", outline="", tags="hover")
+        
+        def on_manual_leave(event):
+            manual_canvas.delete("hover")
+        
         manual_canvas.bind("<Button-1>", on_manual_click)
+        manual_canvas.bind("<ButtonRelease-1>", on_manual_click)
+        manual_canvas.bind("<Enter>", on_manual_enter)
+        manual_canvas.bind("<Leave>", on_manual_leave)
         manual_canvas.config(cursor="hand2")
         
         # Settings button canvas
@@ -204,7 +223,16 @@ class MentalMathGame:
             settings_canvas.after(100, lambda: settings_canvas.delete("pressed"))
             self.show_settings()
         
+        def on_settings_enter(event):
+            settings_canvas.create_rectangle(7, 7, 113, 43, fill="#8a9096", outline="", tags="hover")
+        
+        def on_settings_leave(event):
+            settings_canvas.delete("hover")
+        
         settings_canvas.bind("<Button-1>", on_settings_click)
+        settings_canvas.bind("<ButtonRelease-1>", on_settings_click)
+        settings_canvas.bind("<Enter>", on_settings_enter)
+        settings_canvas.bind("<Leave>", on_settings_leave)
         settings_canvas.config(cursor="hand2")
         
         # Leaderboard button canvas
@@ -220,7 +248,16 @@ class MentalMathGame:
             leaderboard_canvas.after(100, lambda: leaderboard_canvas.delete("pressed"))
             self.show_leaderboard()
         
+        def on_leaderboard_enter(event):
+            leaderboard_canvas.create_rectangle(7, 7, 113, 43, fill="#e85d6d", outline="", tags="hover")
+        
+        def on_leaderboard_leave(event):
+            leaderboard_canvas.delete("hover")
+        
         leaderboard_canvas.bind("<Button-1>", on_leaderboard_click)
+        leaderboard_canvas.bind("<ButtonRelease-1>", on_leaderboard_click)
+        leaderboard_canvas.bind("<Enter>", on_leaderboard_enter)
+        leaderboard_canvas.bind("<Leave>", on_leaderboard_leave)
         leaderboard_canvas.config(cursor="hand2")
         
     def start_game_with_selections(self):
@@ -308,7 +345,16 @@ class MentalMathGame:
             submit_canvas.after(100, lambda: submit_canvas.delete("pressed"))
             submit()
         
+        def on_submit_enter(event):
+            submit_canvas.create_rectangle(7, 7, 113, 33, fill="#45a049", outline="", tags="hover")
+        
+        def on_submit_leave(event):
+            submit_canvas.delete("hover")
+        
         submit_canvas.bind("<Button-1>", on_submit_click)
+        submit_canvas.bind("<ButtonRelease-1>", on_submit_click)
+        submit_canvas.bind("<Enter>", on_submit_enter)
+        submit_canvas.bind("<Leave>", on_submit_leave)
         submit_canvas.config(cursor="hand2")
         
     def show_manual(self):
@@ -331,8 +377,8 @@ class MentalMathGame:
                        padding=[20, 10], 
                        font=("Georgia", 10, "bold"))
         style.map('Manual.TNotebook.Tab',
-                 background=[('selected', '#DEB887'), ('!selected', '#CD853F')],
-                 foreground=[('selected', '#8B4513'), ('!selected', '#F5DEB3')])
+                 background=[('selected', '#4A90E2'), ('!selected', '#2C3E50')],
+                 foreground=[('selected', 'white'), ('!selected', 'white')])
         
         self.manual_notebook.configure(style='Manual.TNotebook')
         
@@ -456,7 +502,16 @@ class MentalMathGame:
             close_canvas.after(100, lambda: close_canvas.delete("pressed"))
             manual_window.destroy()
         
+        def on_manual_close_enter(event):
+            close_canvas.create_rectangle(7, 7, 93, 33, fill="#CD853F", outline="", tags="hover")
+        
+        def on_manual_close_leave(event):
+            close_canvas.delete("hover")
+        
         close_canvas.bind("<Button-1>", on_manual_close_click)
+        close_canvas.bind("<ButtonRelease-1>", on_manual_close_click)
+        close_canvas.bind("<Enter>", on_manual_close_enter)
+        close_canvas.bind("<Leave>", on_manual_close_leave)
         close_canvas.config(cursor="hand2")
     
     def create_manual_page(self, parent, title, content_lines):
@@ -574,7 +629,16 @@ class MentalMathGame:
             save_canvas.after(100, lambda: save_canvas.delete("pressed"))
             save_and_close()
         
+        def on_save_enter(event):
+            save_canvas.create_rectangle(5, 5, 105, 30, fill="#45a049", outline="", tags="hover")
+        
+        def on_save_leave(event):
+            save_canvas.delete("hover")
+        
         save_canvas.bind("<Button-1>", on_save_click)
+        save_canvas.bind("<ButtonRelease-1>", on_save_click)
+        save_canvas.bind("<Enter>", on_save_enter)
+        save_canvas.bind("<Leave>", on_save_leave)
         save_canvas.config(cursor="hand2")
         
         reset_canvas = tk.Canvas(buttons_frame, width=110, height=35, bg=settings_window.cget('bg'), highlightthickness=0)
@@ -589,7 +653,16 @@ class MentalMathGame:
             reset_canvas.after(100, lambda: reset_canvas.delete("pressed"))
             reset_defaults()
         
+        def on_reset_enter(event):
+            reset_canvas.create_rectangle(5, 5, 105, 30, fill="#95a5a6", outline="", tags="hover")
+        
+        def on_reset_leave(event):
+            reset_canvas.delete("hover")
+        
         reset_canvas.bind("<Button-1>", on_reset_click)
+        reset_canvas.bind("<ButtonRelease-1>", on_reset_click)
+        reset_canvas.bind("<Enter>", on_reset_enter)
+        reset_canvas.bind("<Leave>", on_reset_leave)
         reset_canvas.config(cursor="hand2")
         
     def show_leaderboard(self):
@@ -656,7 +729,16 @@ class MentalMathGame:
             close_canvas.after(100, lambda: close_canvas.delete("pressed"))
             leaderboard_window.destroy()
         
+        def on_close_enter(event):
+            close_canvas.create_rectangle(5, 5, 75, 30, fill="#f5626a", outline="", tags="hover")
+        
+        def on_close_leave(event):
+            close_canvas.delete("hover")
+        
         close_canvas.bind("<Button-1>", on_close_click)
+        close_canvas.bind("<ButtonRelease-1>", on_close_click)
+        close_canvas.bind("<Enter>", on_close_enter)
+        close_canvas.bind("<Leave>", on_close_leave)
         close_canvas.config(cursor="hand2")
         
     def start_game(self, speed, mode, max_number, hardness):
@@ -776,10 +858,14 @@ class MentalMathGame:
         input_frame.pack(pady=10)
         
         tk.Label(input_frame, text="Answer:", font=("Arial", 14, "bold"), bg="#F0F8FF").pack(side="left")
-        self.answer_entry = tk.Entry(input_frame, font=("Arial", 16), width=15, relief="solid", bd=2)
+        self.answer_entry = tk.Entry(input_frame, font=("Arial", 16), width=15, relief="solid", bd=2,
+                                   highlightthickness=2, highlightcolor="#4A90E2", insertwidth=3)
         self.answer_entry.pack(side="left", padx=10)
-        self.answer_entry.focus()
+        self.answer_entry.focus_set()
         self.answer_entry.bind("<Return>", self.check_answer)
+        self.answer_entry.bind("<Button-1>", self.focus_answer_entry)
+        self.answer_entry.bind("<FocusIn>", self.on_entry_focus_in)
+        self.answer_entry.bind("<FocusOut>", self.on_entry_focus_out)
         
         # Bind space for pause
         self.game_window.bind("<KeyPress-space>", self.toggle_pause)
@@ -907,6 +993,22 @@ class MentalMathGame:
             font=("Arial", 16, "bold"), fill="white"
         )
         
+    def focus_answer_entry(self, event=None):
+        """Ensure the answer entry gets focus when clicked"""
+        if hasattr(self, 'answer_entry'):
+            self.answer_entry.focus_set()
+            self.answer_entry.icursor(tk.END)  # Move cursor to end
+    
+    def on_entry_focus_in(self, event=None):
+        """Handle when entry field gains focus"""
+        if hasattr(self, 'answer_entry'):
+            self.answer_entry.config(highlightbackground="#4A90E2", bg="#FFFFFF")
+    
+    def on_entry_focus_out(self, event=None):
+        """Handle when entry field loses focus"""
+        if hasattr(self, 'answer_entry'):
+            self.answer_entry.config(highlightbackground="#CCCCCC", bg="#F8F8F8")
+    
     def toggle_pause(self, event=None):
         if not self.game_active:
             return
@@ -916,6 +1018,7 @@ class MentalMathGame:
             self.game_paused = False
             self.message_label.config(text="")
             self.start_time = time.time()  # Reset start time
+            self.focus_answer_entry()  # Refocus on answer entry
             self.update_game()
         else:
             # Pause
@@ -1184,7 +1287,16 @@ class MentalMathGame:
             play_again_canvas.after(100, lambda: play_again_canvas.delete("pressed"))
             self.close_game()
         
+        def on_play_again_enter(event):
+            play_again_canvas.create_rectangle(12, 12, 188, 48, fill="#87CEEB", outline="", tags="hover")
+        
+        def on_play_again_leave(event):
+            play_again_canvas.delete("hover")
+        
         play_again_canvas.bind("<Button-1>", on_play_again_click)
+        play_again_canvas.bind("<ButtonRelease-1>", on_play_again_click)
+        play_again_canvas.bind("<Enter>", on_play_again_enter)
+        play_again_canvas.bind("<Leave>", on_play_again_leave)
         play_again_canvas.config(cursor="hand2")
         
     def close_game(self):
